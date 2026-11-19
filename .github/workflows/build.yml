@@ -46,6 +46,7 @@ jobs:
           cp index.html app/src/main/assets/index.html
           cp permissions.js app/src/main/assets/permissions.js
 
+          sed -i 's/package="com\.example\.eldergallery"[[:space:]]*//g' app/src/main/AndroidManifest.xml
           sed -i '1s/package com.example.eldergallery;/package com.example.elderassist;/' app/src/main/java/com/example/elderassist/GalleryReader.java
 
           cat << 'EOF' > gradle.properties
