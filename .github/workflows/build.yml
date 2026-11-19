@@ -48,6 +48,12 @@ jobs:
 
           sed -i '1s/package com.example.eldergallery;/package com.example.elderassist;/' app/src/main/java/com/example/elderassist/GalleryReader.java
 
+          cat << 'EOF' > gradle.properties
+          android.useAndroidX=true
+          android.enableJetifier=true
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          EOF
+
           cat << 'EOF' > settings.gradle
           rootProject.name = "ElderAssist"
           include(":app")
@@ -115,4 +121,3 @@ jobs:
         with:
           name: ElderAssist-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
-          
