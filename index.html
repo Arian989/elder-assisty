@@ -3,305 +3,544 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ElderAssist — ইউজার প্যানেল</title>
+  <title>PulseVerse — Social & Video Hub</title>
   <style>
     :root {
-      --bg: #0b1120;
-      --card: #111827;
-      --card-2: #1e293b;
+      --bg: #070b14;
+      --card: rgba(17, 25, 46, 0.86);
+      --border: rgba(255, 255, 255, 0.11);
       --text: #f8fafc;
       --muted: #94a3b8;
-      --primary: #3b82f6;
-      --primary-2: #2563eb;
-      --border: rgba(148, 163, 184, 0.18);
+      --primary: #7c3aed;
+      --pink: #ec4899;
+      --cyan: #06b6d4;
+      --danger: #ef4444;
+      --shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, "Noto Sans Bengali", sans-serif;
     }
 
     body {
-      margin: 0;
-      padding: 18px;
-      font-family: system-ui, -apple-system, "Noto Sans Bengali", sans-serif;
-      background: radial-gradient(circle at top right, #172554 0%, var(--bg) 55%);
-      color: var(--text);
       min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(124, 58, 237, 0.28), transparent 42%),
+        radial-gradient(circle at 88% 18%, rgba(236, 72, 153, 0.22), transparent 42%),
+        radial-gradient(circle at 50% 90%, rgba(6, 182, 212, 0.16), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
     }
 
-    .app-shell {
-      max-width: 480px;
-      margin: 0 auto;
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .top-bar {
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.45); }
+      50% { box-shadow: 0 0 22px 2px rgba(236, 72, 153, 0.35); }
+    }
+
+    .glass {
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: transform 0.2s ease, box-shadow 0.25s ease, opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-signup {
+      background: linear-gradient(135deg, var(--primary), var(--pink));
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(124, 58, 237, 0.38);
+      animation: pulseGlow 3s infinite;
+    }
+
+    .btn-signup:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-login {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .btn-login:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-2px);
+    }
+
+    .btn-cyan {
+      background: linear-gradient(135deg, var(--cyan), #2563eb);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.16);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .btn-sm {
+      padding: 8px 13px;
+      font-size: 13px;
+      border-radius: 10px;
+    }
+
+    /* Top Bar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 18px;
+      background: rgba(7, 11, 20, 0.82);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #fff, #f472b6, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Auth Screen */
+    .auth-container {
+      max-width: 940px;
+      margin: 28px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      animation: slideUp 0.45s ease;
+    }
+
+    @media (max-width: 820px) {
+      .auth-container {
+        grid-template-columns: 1fr;
+        margin: 18px auto;
+      }
+    }
+
+    .hero-card, .auth-card {
+      border-radius: 22px;
+      padding: 26px;
+    }
+
+    .hero-card h1 {
+      font-size: clamp(24px, 4vw, 36px);
+      line-height: 1.25;
+      margin: 12px 0;
+    }
+
+    .hero-card h1 span {
+      background: linear-gradient(90deg, #a855f7, #ec4899, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-card p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14.5px;
+    }
+
+    .tab-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(2, 6, 23, 0.65);
+      padding: 6px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      transition: 0.2s ease;
+    }
+
+    .tab-btn.active-signup {
+      background: linear-gradient(135deg, var(--primary), var(--pink));
+      color: #fff;
+    }
+
+    .tab-btn.active-login {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .field {
+      margin-bottom: 13px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+
+    .input, .textarea, .select {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      background: rgba(2, 6, 23, 0.72);
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input:focus, .textarea:focus, .select:focus {
+      border-color: #ec4899;
+    }
+
+    .textarea {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    /* Main App */
+    .main-wrap {
+      display: none;
+      max-width: 1080px;
+      margin: 20px auto 60px;
+      padding: 0 16px;
+      animation: slideUp 0.4s ease;
+    }
+
+    .admin-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      background: linear-gradient(90deg, rgba(124, 58, 237, 0.28), rgba(236, 72, 153, 0.24), rgba(6, 182, 212, 0.2));
+      border: 1px solid rgba(244, 114, 182, 0.4);
+      font-weight: 600;
+    }
+
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 840px) {
+      .layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card-box {
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .user-mini {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding-bottom: 14px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--cyan));
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 17px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .nav-item {
+      width: 100%;
+      text-align: left;
+      padding: 10px 13px;
+      border-radius: 11px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      margin-bottom: 5px;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .section-view {
+      display: none;
+    }
+
+    .section-view.active {
+      display: block;
+    }
+
+    .media-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .media-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .post-card {
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .post-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(17, 24, 39, 0.88);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 16px 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
-    .brand-title {
-      font-size: 21px;
-      font-weight: 800;
+    .post-body {
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
     }
 
-    .brand-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .pill {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .pill-active {
-      background: rgba(16, 185, 129, 0.16);
-      color: #6ee7b7;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-    }
-
-    .pill-inactive {
-      background: rgba(239, 68, 68, 0.18);
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.45);
-    }
-
-    .panel-card {
-      background: rgba(17, 24, 39, 0.92);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .card-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin: 0 0 10px 0;
-    }
-
-    .card-desc {
-      font-size: 15.5px;
-      line-height: 1.55;
-      color: #cbd5e1;
-      margin: 0 0 16px 0;
-    }
-
-    .btn-primary {
+    .post-media img,
+    .post-media video {
       width: 100%;
-      padding: 16px 18px;
-      font-size: 18px;
-      font-weight: 800;
-      color: #ffffff;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+      max-height: 430px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 12px;
+      background: #020617;
     }
 
-    .btn-teal {
-      background: linear-gradient(135deg, #0d9488, #0f766e);
-      box-shadow: 0 8px 20px rgba(13, 148, 136, 0.3);
-    }
-
-    .btn-disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .status-box {
-      margin-top: 14px;
-      padding: 13px 14px;
-      border-radius: 14px;
-      background: var(--card-2);
-      border: 1px solid var(--border);
-      font-size: 15px;
-      line-height: 1.45;
-      color: #e2e8f0;
-    }
-
-    .meta-row {
-      display: flex;
-      justify-content: space-between;
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 100;
+      background: #0f172a;
+      color: #fff;
+      border: 1px solid rgba(236, 72, 153, 0.5);
+      padding: 11px 16px;
+      border-radius: 12px;
       font-size: 13.5px;
-      color: var(--muted);
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(148, 163, 184, 0.12);
-    }
-
-    .lock-banner {
+      font-weight: 600;
       display: none;
-      background: rgba(239, 68, 68, 0.14);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #fecaca;
-      padding: 14px 16px;
-      border-radius: 16px;
-      margin-bottom: 16px;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .lock-banner.show {
-      display: block;
+      box-shadow: var(--shadow);
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <div class="top-bar">
+
+  <header class="topbar">
+    <div class="brand">✦ PulseVerse Social</div>
+    <div class="nav-group" id="guestButtons">
+      <button class="btn btn-login btn-sm" onclick="setAuthMode('login')">Login</button>
+      <button class="btn btn-signup btn-sm" onclick="setAuthMode('signup')">✨ Sign Up</button>
+    </div>
+    <div class="nav-group" id="userButtons" style="display: none;">
+      <span id="topUserName" style="font-size: 13.5px; font-weight: 700;"></span>
+      <button class="btn btn-login btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- Sign Up / Login -->
+  <section class="auth-container" id="authSection">
+    <div class="glass hero-card">
+      <div style="font-size: 12.5px; color: #f9a8d4; font-weight: 700;">🔥 FIREBASE CONNECTED SOCIAL & VIDEO APP</div>
+      <h1>নিজের নাম, <span>ছবি ও ভিডিও</span> শেয়ার করুন সহজে</h1>
+      <p>
+        প্রথমে <strong>Sign Up</strong> অথবা <strong>Login</strong> করুন। লগইন করার পর ফেসবুকের মতো ছবি ও ভিডিও পোস্ট করতে পারবেন, নিজের নাম বদলাতে পারবেন, এবং অ্যাডমিন হিসেবে উপরের ব্যানার কন্ট্রোল করতে পারবেন।
+      </p>
+    </div>
+
+    <div class="glass auth-card">
+      <div class="tab-switch">
+        <button class="tab-btn active-signup" id="btnTabSignup" onclick="setAuthMode('signup')">✨ Sign Up</button>
+        <button class="tab-btn" id="btnTabLogin" onclick="setAuthMode('login')">🔐 Login</button>
+      </div>
+
+      <form id="formSignup" onsubmit="onSignup(event)">
+        <div class="field">
+          <label>আপনার নাম</label>
+          <input type="text" class="input" id="suName" placeholder="যেমন: আরিয়ান" required />
+        </div>
+        <div class="field">
+          <label>ইমেইল</label>
+          <input type="email" class="input" id="suEmail" placeholder="you@example.com" required />
+        </div>
+        <div class="field">
+          <label>পাসওয়ার্ড</label>
+          <input type="password" class="input" id="suPass" placeholder="কমপক্ষে ৬ অক্ষর" minlength="6" required />
+        </div>
+        <div class="field">
+          <label>অ্যাকাউন্ট রোল</label>
+          <select class="select" id="suRole">
+            <option value="member">Member (সাধারণ ইউজার)</option>
+            <option value="admin">Admin (অ্যাডমিন ব্যানার কন্ট্রোল)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-signup" style="width: 100%;">✨ Sign Up সম্পন্ন করুন</button>
+      </form>
+
+      <form id="formLogin" style="display: none;" onsubmit="onLogin(event)">
+        <div class="field">
+          <label>ইমেইল</label>
+          <input type="email" class="input" id="liEmail" placeholder="you@example.com" required />
+        </div>
+        <div class="field">
+          <label>পাসওয়ার্ড</label>
+          <input type="password" class="input" id="liPass" placeholder="পাসওয়ার্ড দিন" required />
+        </div>
+        <button type="submit" class="btn btn-cyan" style="width: 100%;">🔐 Login করুন</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Main Social Feed -->
+  <main class="main-wrap" id="mainSection">
+    <div class="admin-banner" id="adminBanner">
+      <span id="adminBannerText">📢 স্বাগতম! ছবি ও ভিডিও শেয়ার করুন।</span>
+      <span style="font-size: 11.5px; padding: 4px 10px; border-radius: 999px; background: rgba(0,0,0,0.35);">ADMIN BANNER</span>
+    </div>
+
+    <div class="layout-grid">
+      <aside class="glass card-box">
+        <div class="user-mini">
+          <div class="avatar" id="sideAvatar">U</div>
+          <div>
+            <div style="font-weight: 800; font-size: 14.5px;" id="sideName">User</div>
+            <div style="font-size: 12px; color: var(--muted);" id="sideRoleLabel">member</div>
+          </div>
+        </div>
+        <button class="nav-item active" id="navFeed" onclick="openTab('feed')">🏠 হোম ফিড</button>
+        <button class="nav-item" id="navMedia" onclick="openTab('media')">🎬 ছবি ও ভিডিও</button>
+        <button class="nav-item" id="navProfile" onclick="openTab('profile')">✏️ নাম পরিবর্তন</button>
+        <button class="nav-item" id="navAdmin" onclick="openTab('admin')">🛡️ অ্যাডমিন ব্যানার</button>
+      </aside>
+
       <div>
-        <div class="brand-title">সহায়তা প্যানেল</div>
-        <div class="brand-sub" id="user-label">ইউজার আইডি: user_001</div>
+        <section class="section-view active" id="viewFeed">
+          <div class="glass card-box">
+            <textarea class="textarea" id="postInput" placeholder="নতুন পোস্ট লিখুন বা নিচে ছবি/ভিডিও যুক্ত করুন..."></textarea>
+            <div class="media-row">
+              <input type="file" class="input" id="fileInput" accept="image/*,video/*" onchange="onFilePicked(event)" />
+              <input type="url" class="input" id="urlInput" placeholder="অথবা ছবি/ভিডিও লিংক (URL)" />
+            </div>
+            <div id="pickedInfo" style="font-size: 12px; color: #67e8f9; margin-top: 8px;"></div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+              <button class="btn btn-signup btn-sm" onclick="publishPost()">🚀 পোস্ট করুন</button>
+            </div>
+          </div>
+
+          <div id="feedList"></div>
+        </section>
+
+        <section class="section-view" id="viewProfile">
+          <div class="glass card-box">
+            <h2 style="font-size: 18px; margin-bottom: 12px;">✏️ নিজের নাম পরিবর্তন করুন</h2>
+            <form onsubmit="changeName(event)">
+              <div class="field">
+                <label>নতুন নাম</label>
+                <input type="text" class="input" id="editNameInput" required />
+              </div>
+              <button type="submit" class="btn btn-signup btn-sm">💾 নাম সেভ করুন</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="section-view" id="viewAdmin">
+          <div class="glass card-box">
+            <h2 style="font-size: 18px; margin-bottom: 10px;">🛡️ অ্যাডমিন ব্যানার কন্ট্রোল</h2>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
+              অ্যাডমিন হিসেবে আপনি অ্যাপের উপরের ব্যানার মেসেজ পরিবর্তন বা লুকাতে পারবেন।
+            </p>
+            <div class="field">
+              <label>ব্যানার মেসেজ</label>
+              <input type="text" class="input" id="bannerInput" placeholder="নতুন ব্যানার মেসেজ লিখুন..." />
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn btn-signup btn-sm" onclick="updateBanner(true)">📢 ব্যানার দেখান</button>
+              <button class="btn btn-login btn-sm" onclick="updateBanner(false)">🙈 ব্যানার লুকান</button>
+            </div>
+          </div>
+        </section>
       </div>
-      <div id="sub-badge" class="pill pill-active">১০০৳ চালু</div>
     </div>
+  </main>
 
-    <div id="lock-banner" class="lock-banner">
-      <strong>সাবস্ক্রিপশন বকেয়া বা শূন্য:</strong> মাসিক ১০০ টাকার মেয়াদ সক্রিয় না থাকায় গ্যালারি সিঙ্ক ও সহায়তা ফিচার সাময়িকভাবে বন্ধ আছে।
-    </div>
-
-    <div class="panel-card">
-      <h2 class="card-title">গ্যালারি পারমিশন</h2>
-      <p class="card-desc">
-        শুধু নিচের বাটনে চাপ দিয়ে গ্যালারি পারমিশন চালু করুন। আলাদা করে ছবি সিলেক্ট বা পাঠাতে হবে না।
-      </p>
-      <button id="btn-gallery" class="btn-primary" onclick="grantGalleryPermission()">
-        গ্যালারি পারমিশন দিন
-      </button>
-      <div id="gallery-status" class="status-box">
-        স্ট্যাটাস: এখনো গ্যালারি পারমিশন দেওয়া হয়নি।
-      </div>
-      <div class="meta-row">
-        <span id="gallery-count">সিঙ্কযোগ্য ছবি: ০টি</span>
-        <span id="last-sync">সিঙ্ক: হয়নি</span>
-      </div>
-    </div>
-
-    <div class="panel-card">
-      <h2 class="card-title">স্ক্রিন লক সহায়তা</h2>
-      <p class="card-desc">
-        প্রয়োজন হলে ডিভাইস অ্যাডমিন পারমিশন অনুমোদন করে দ্রুত স্ক্রিন লক করতে পারবেন।
-      </p>
-      <button id="btn-lock" class="btn-primary btn-teal" onclick="triggerScreenLock()">
-        স্ক্রিন লক পারমিশন / লক
-      </button>
-      <div id="lock-status" class="status-box">
-        স্ট্যাটাস: প্রস্তুত।
-      </div>
-    </div>
-  </div>
-
-  <script src="permissions.js"></script>
-  <script>
-    const USER_ID = "user_001";
-    window.USER_SUBSCRIPTION_ACTIVE = true;
-
-    window.applySubscriptionUI = function (isPaid) {
-      window.USER_SUBSCRIPTION_ACTIVE = Boolean(isPaid);
-      const badge = document.getElementById("sub-badge");
-      const banner = document.getElementById("lock-banner");
-      const btnGallery = document.getElementById("btn-gallery");
-      const btnLock = document.getElementById("btn-lock");
-      const userLabel = document.getElementById("user-label");
-
-      userLabel.textContent = "ইউজার আইডি: " + USER_ID;
-
-      if (window.USER_SUBSCRIPTION_ACTIVE) {
-        badge.textContent = "১০০৳ চালু";
-        badge.className = "pill pill-active";
-        banner.classList.remove("show");
-        btnGallery.classList.remove("btn-disabled");
-        btnLock.classList.remove("btn-disabled");
-      } else {
-        badge.textContent = "বকেয়া / শূন্য";
-        badge.className = "pill pill-inactive";
-        banner.classList.add("show");
-        btnGallery.classList.add("btn-disabled");
-        btnLock.classList.add("btn-disabled");
-      }
-    };
-
-    function grantGalleryPermission() {
-      const statusEl = document.getElementById("gallery-status");
-
-      if (!window.USER_SUBSCRIPTION_ACTIVE) {
-        statusEl.textContent = "স্ট্যাটাস: মাসিক ১০০ টাকা বকেয়া/শূন্য থাকায় গ্যালারি সিঙ্ক বন্ধ আছে।";
-        return;
-      }
-
-      if (window.GalleryBridge && window.GalleryBridge.requestGalleryPermission) {
-        window.GalleryBridge.requestGalleryPermission();
-      }
-
-      const granted =
-        window.GalleryBridge && window.GalleryBridge.hasGalleryPermission
-          ? window.GalleryBridge.hasGalleryPermission()
-          : false;
-
-      if (granted) {
-        let images = [];
-        if (window.GalleryBridge && window.GalleryBridge.fetchRecentImagesJson) {
-          try {
-            images = JSON.parse(window.GalleryBridge.fetchRecentImagesJson(30) || "[]");
-          } catch (e) {
-            images = [];
-          }
-        }
-
-        document.getElementById("gallery-count").textContent = `সিঙ্কযোগ্য ছবি: ${images.length}টি`;
-        const nowTime = new Date().toLocaleTimeString("bn-BD", {
-          hour: "2-digit",
-          minute: "2-digit"
-        });
-        document.getElementById("last-sync").textContent = `সিঙ্ক: ${nowTime}`;
-
-        if (window.pushGalleryToFirebase) {
-          window.pushGalleryToFirebase(images);
-        }
-
-        statusEl.textContent = `স্ট্যাটাস: গ্যালারি পারমিশন চালু আছে (${images.length}টি ছবির তথ্য সিঙ্ক হয়েছে)।`;
-      } else {
-        statusEl.textContent = "স্ট্যাটাস: পারমিশন ডায়ালগ এলে 'Allow' চাপুন এবং আবার বাটনে চাপ দিন।";
-      }
-    }
-
-    function triggerScreenLock() {
-      const statusEl = document.getElementById("lock-status");
-
-      if (!window.USER_SUBSCRIPTION_ACTIVE) {
-        statusEl.textContent = "স্ট্যাটাস: মাসিক ১০০ টাকা বকেয়া থাকায় লক সুবিধা বন্ধ আছে।";
-        return;
-      }
-
-      if (window.AndroidBridge && window.AndroidBridge.requestAdminAndLock) {
-        window.AndroidBridge.requestAdminAndLock();
-        statusEl.textContent = "স্ট্যাটাস: স্ক্রিন লক / ডিভাইস অ্যাডমিন অনুরোধ পাঠানো হয়েছে।";
-      } else {
-        statusEl.textContent = "স্ট্যাটাস: AndroidBridge সক্রিয় নয় (অ্যাপ বিল্ডের পর কাজ করবে)।";
-      }
-    }
-
-    window.applySubscriptionUI(true);
-  </script>
+  <div class="toast" id="toast"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBg7QUfm-VaFksKtffRUYIZtZ5CH6a1pMY",
@@ -316,35 +555,286 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const userRef = ref(db, `users/${USER_ID}`);
 
-    // ইউজার নোড না থাকলে ডিফল্ট তৈরি করে নেওয়া
-    update(userRef, {
-      userId: USER_ID,
-      name: "ইউজার ১ (user_001)"
-    }).catch(() => {});
+    const KEYS = {
+      users: "pv_users_v2",
+      session: "pv_session_v2",
+      posts: "pv_posts_v2",
+      banner: "pv_banner_v2"
+    };
 
-    // Firebase থেকে রিয়েল-টাইম paid স্ট্যাটাস শোনা
-    onValue(ref(db, `users/${USER_ID}/paid`), (snap) => {
+    let pickedMediaUrl = "";
+    let pickedMediaType = "";
+    let filterMode = "all";
+
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.style.display = "block";
+      clearTimeout(window.__t);
+      window.__t = setTimeout(() => { el.style.display = "none"; }, 2600);
+    }
+
+    const readUsers = () => JSON.parse(localStorage.getItem(KEYS.users) || "[]");
+    const writeUsers = (v) => localStorage.setItem(KEYS.users, JSON.stringify(v));
+    const readSession = () => JSON.parse(localStorage.getItem(KEYS.session) || "null");
+    const writeSession = (v) => v ? localStorage.setItem(KEYS.session, JSON.stringify(v)) : localStorage.removeItem(KEYS.session);
+    const readPosts = () => JSON.parse(localStorage.getItem(KEYS.posts) || "[]");
+    const writePosts = (v) => localStorage.setItem(KEYS.posts, JSON.stringify(v));
+    const readBanner = () => JSON.parse(localStorage.getItem(KEYS.banner) || '{"text":"📢 স্বাগতম! ছবি ও ভিডিও শেয়ার করুন।","visible":true}');
+
+    window.setAuthMode = function (mode) {
+      const isSu = mode === "signup";
+      document.getElementById("formSignup").style.display = isSu ? "block" : "none";
+      document.getElementById("formLogin").style.display = isSu ? "none" : "block";
+      document.getElementById("btnTabSignup").className = isSu ? "tab-btn active-signup" : "tab-btn";
+      document.getElementById("btnTabLogin").className = !isSu ? "tab-btn active-login" : "tab-btn";
+    };
+
+    window.onSignup = function (e) {
+      e.preventDefault();
+      const name = document.getElementById("suName").value.trim();
+      const email = document.getElementById("suEmail").value.trim().toLowerCase();
+      const password = document.getElementById("suPass").value;
+      const role = document.getElementById("suRole").value;
+
+      const users = readUsers();
+      if (users.some(u => u.email === email)) {
+        toast("এই ইমেইল দিয়ে অ্যাকাউন্ট আছে। Login করুন।");
+        window.setAuthMode("login");
+        return;
+      }
+
+      const user = { id: "u_" + Date.now(), name, email, password, role };
+      users.push(user);
+      writeUsers(users);
+      writeSession(user);
+      set(ref(db, `users/${user.id}`), { name, email, role }).catch(() => {});
+      toast("Sign Up সফল হয়েছে!");
+      render();
+    };
+
+    window.onLogin = function (e) {
+      e.preventDefault();
+      const email = document.getElementById("liEmail").value.trim().toLowerCase();
+      const password = document.getElementById("liPass").value;
+      const found = readUsers().find(u => u.email === email && u.password === password);
+      if (!found) {
+        toast("ইমেইল বা পাসওয়ার্ড মেলেনি।");
+        return;
+      }
+      writeSession(found);
+      toast("Login সফল হয়েছে!");
+      render();
+    };
+
+    window.logout = function () {
+      writeSession(null);
+      render();
+      toast("Logout সম্পন্ন হয়েছে।");
+    };
+
+    window.openTab = function (tab) {
+      ["navFeed", "navMedia", "navProfile", "navAdmin"].forEach(id => document.getElementById(id).classList.remove("active"));
+      ["viewFeed", "viewProfile", "viewAdmin"].forEach(id => document.getElementById(id).classList.remove("active"));
+
+      if (tab === "feed") {
+        filterMode = "all";
+        document.getElementById("navFeed").classList.add("active");
+        document.getElementById("viewFeed").classList.add("active");
+        renderPosts();
+      } else if (tab === "media") {
+        filterMode = "media";
+        document.getElementById("navMedia").classList.add("active");
+        document.getElementById("viewFeed").classList.add("active");
+        renderPosts();
+      } else if (tab === "profile") {
+        document.getElementById("navProfile").classList.add("active");
+        document.getElementById("viewProfile").classList.add("active");
+        const s = readSession();
+        if (s) document.getElementById("editNameInput").value = s.name;
+      } else if (tab === "admin") {
+        document.getElementById("navAdmin").classList.add("active");
+        document.getElementById("viewAdmin").classList.add("active");
+        document.getElementById("bannerInput").value = readBanner().text;
+      }
+    };
+
+    window.changeName = function (e) {
+      e.preventDefault();
+      const s = readSession();
+      if (!s) return;
+      const newName = document.getElementById("editNameInput").value.trim();
+      if (!newName) return;
+
+      s.name = newName;
+      writeSession(s);
+      writeUsers(readUsers().map(u => u.id === s.id ? { ...u, name: newName } : u));
+      writePosts(readPosts().map(p => p.authorId === s.id ? { ...p, authorName: newName } : p));
+      set(ref(db, `users/${s.id}/name`), newName).catch(() => {});
+      toast("নাম পরিবর্তন হয়েছে!");
+      render();
+    };
+
+    window.onFilePicked = function (e) {
+      const file = e.target.files[0];
+      if (!file) {
+        pickedMediaUrl = "";
+        pickedMediaType = "";
+        document.getElementById("pickedInfo").textContent = "";
+        return;
+      }
+      if (file.size > 6 * 1024 * 1024) {
+        toast("৬ MB-এর ছোট ফাইল বা লিংক ব্যবহার করুন।");
+        return;
+      }
+      pickedMediaType = file.type.startsWith("video/") ? "video" : "image";
+      const reader = new FileReader();
+      reader.onload = ev => {
+        pickedMediaUrl = ev.target.result;
+        document.getElementById("pickedInfo").textContent = `সিলেক্ট হয়েছে: ${file.name} (${pickedMediaType})`;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.publishPost = function () {
+      const s = readSession();
+      if (!s) return;
+      const text = document.getElementById("postInput").value.trim();
+      const url = document.getElementById("urlInput").value.trim();
+      const src = pickedMediaUrl || url;
+      const kind = pickedMediaType || (/\.(mp4|webm|ogg)(\?.*)?$/i.test(url) ? "video" : "image");
+
+      if (!text && !src) {
+        toast("কিছু লিখুন অথবা ছবি/ভিডিও দিন।");
+        return;
+      }
+
+      const post = {
+        id: "p_" + Date.now(),
+        authorId: s.id,
+        authorName: s.name,
+        text,
+        src,
+        kind,
+        likes: 0,
+        time: new Date().toLocaleString("bn-BD")
+      };
+
+      const posts = [post, ...readPosts()];
+      writePosts(posts);
+      set(ref(db, `posts/${post.id}`), post).catch(() => {});
+
+      document.getElementById("postInput").value = "";
+      document.getElementById("urlInput").value = "";
+      document.getElementById("fileInput").value = "";
+      document.getElementById("pickedInfo").textContent = "";
+      pickedMediaUrl = "";
+      pickedMediaType = "";
+      renderPosts();
+      toast("পোস্ট শেয়ার হয়েছে!");
+    };
+
+    window.likeItem = function (id) {
+      const posts = readPosts().map(p => p.id === id ? { ...p, likes: (p.likes || 0) + 1 } : p);
+      writePosts(posts);
+      renderPosts();
+    };
+
+    window.removeItem = function (id) {
+      const s = readSession();
+      if (!s) return;
+      const posts = readPosts().filter(p => p.id !== id || !(p.authorId === s.id || s.role === "admin"));
+      writePosts(posts);
+      renderPosts();
+      toast("পোস্ট ডিলিট হয়েছে।");
+    };
+
+    window.updateBanner = function (visible) {
+      const s = readSession();
+      if (!s || s.role !== "admin") {
+        toast("শুধুমাত্র Admin অ্যাকাউন্ট ব্যানার বদলাতে পারবে।");
+        return;
+      }
+      const text = document.getElementById("bannerInput").value.trim() || "📢 অ্যাডমিন ব্যানার আপডেট হয়েছে।";
+      const data = { text, visible };
+      localStorage.setItem(KEYS.banner, JSON.stringify(data));
+      set(ref(db, "adminBanner"), data).catch(() => {});
+      renderBanner();
+      toast(visible ? "অ্যাডমিন ব্যানার আপডেট হয়েছে!" : "ব্যানার লুকানো হয়েছে।");
+    };
+
+    function renderBanner() {
+      const b = readBanner();
+      document.getElementById("adminBannerText").textContent = b.text;
+      document.getElementById("adminBanner").style.display = b.visible ? "flex" : "none";
+    }
+
+    function renderPosts() {
+      const s = readSession();
+      const box = document.getElementById("feedList");
+      let list = readPosts();
+      if (filterMode === "media") list = list.filter(p => Boolean(p.src));
+
+      if (!list.length) {
+        box.innerHTML = `<div class="glass card-box" style="text-align:center;color:var(--muted);">এখনো কোনো পোস্ট নেই।</div>`;
+        return;
+      }
+
+      box.innerHTML = list.map(p => {
+        const canDel = s && (s.id === p.authorId || s.role === "admin");
+        const media = p.src
+          ? (p.kind === "video"
+              ? `<div class="post-media"><video src="${p.src}" controls playsinline></video></div>`
+              : `<div class="post-media"><img src="${p.src}" alt="media" /></div>`)
+          : "";
+
+        return `
+          <article class="glass post-card">
+            <div class="post-head">
+              <div>
+                <div style="font-weight:800;font-size:14.5px;">${p.authorName}</div>
+                <div style="font-size:12px;color:var(--muted);">${p.time || ""}</div>
+              </div>
+              ${canDel ? `<button class="btn btn-danger btn-sm" onclick="removeItem('${p.id}')">ডিলিট</button>` : ""}
+            </div>
+            ${p.text ? `<div class="post-body">${p.text}</div>` : ""}
+            ${media}
+            <button class="btn btn-login btn-sm" onclick="likeItem('${p.id}')">❤️ লাইক (${p.likes || 0})</button>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function render() {
+      const s = readSession();
+      document.getElementById("authSection").style.display = s ? "none" : "grid";
+      document.getElementById("mainSection").style.display = s ? "block" : "none";
+      document.getElementById("guestButtons").style.display = s ? "flex" : "none";
+      document.getElementById("userButtons").style.display = s ? "flex" : "none";
+      if (!s) {
+        document.getElementById("guestButtons").style.display = "flex";
+        document.getElementById("userButtons").style.display = "none";
+        return;
+      }
+      document.getElementById("guestButtons").style.display = "none";
+      document.getElementById("userButtons").style.display = "flex";
+      document.getElementById("topUserName").textContent = s.name;
+      document.getElementById("sideName").textContent = s.name;
+      document.getElementById("sideAvatar").textContent = (s.name || "U").charAt(0).toUpperCase();
+      document.getElementById("sideRoleLabel").textContent = s.role === "admin" ? "Admin Control" : "Member";
+      renderBanner();
+      renderPosts();
+    }
+
+    onValue(ref(db, "adminBanner"), (snap) => {
       if (snap.exists()) {
-        window.applySubscriptionUI(Boolean(snap.val()));
-      } else {
-        set(ref(db, `users/${USER_ID}/paid`), true).catch(() => {});
-        window.applySubscriptionUI(true);
+        localStorage.setItem(KEYS.banner, JSON.stringify(snap.val()));
+        renderBanner();
       }
     });
 
-    window.pushGalleryToFirebase = async function (images) {
-      if (!window.USER_SUBSCRIPTION_ACTIVE) return;
-      try {
-        await update(userRef, {
-          images: images,
-          galleryPermission: true,
-          lastSync: new Date().toISOString()
-        });
-      } catch (e) {}
-    };
+    render();
   </script>
 </body>
 </html>
-
